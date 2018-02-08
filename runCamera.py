@@ -15,6 +15,7 @@ align_dlib = AlignDlib(os.path.join(os.path.dirname(__file__), 'shape_predictor_
 bBox = None
 threadLock = threading.Lock()
 q = Queue(maxsize=1)
+name = "unknown"
 
 def _align_image(image, crop_dim):
     bb = align_dlib.getLargestFaceBoundingBox(image)
@@ -34,8 +35,9 @@ def classifier_thread_worker(q):
             image_in = q.get_nowait()
             if image_in is None:
                 break
-            classifier.classify_image(image=image_in)
+            name, prediction = classifier.classify_image(image=image_in)
             q.task_done()
+            print(" Found : {} with {:.3%} probability".format(name, prediction))
         except:
             pass
 
@@ -54,9 +56,9 @@ while cap.isOpened:
     ret, frame = cap.read()
 
     if ret is True:
-        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
-        smallFrame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
-        image = cv2.cvtColor(smallFrame, cv2.COLOR_BGR2RGB)
+        frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25, interpolation=cv2.INTER_NEAREST)
+        #smallFrame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         if image is not None:
             bb, aligned_image = _align_image(image, crop_dim)
@@ -68,10 +70,10 @@ while cap.isOpened:
 
             if bBox is not None :
                 cv2.rectangle(frame,
-                              pt1=(bBox.left()*2,
-                                   bBox.top()*2),
-                              pt2=(bBox.right()*2,
-                                   bBox.bottom()*2),
+                              pt1=(bBox.left(),
+                                   bBox.top()),
+                              pt2=(bBox.right(),
+                                   bBox.bottom()),
                               color=(0, 255, 0),
                               thickness=1)
 

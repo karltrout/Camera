@@ -80,41 +80,14 @@ class Classifier:
         probability= .5
 
         for i in range(len(best_class_indices)):
-        #if (best_class_probabilities[i] > .5):
-            print('%4d  %s: %.3f' % (i, self.class_names[best_class_indices[i]], best_class_probabilities[i]))
+           # print('%4d  %s: %.3f' % (i, self.class_names[best_class_indices[i]], best_class_probabilities[i]))
             if (best_class_probabilities[i] > probability):
                 name = self.class_names[best_class_indices[i]]
                 probability = best_class_probabilities[i]
-        #else:
-         #   print('{} Unidentified: {}'.format(i, best_class_probabilities[i]))
 
         print('Completed ID process in {} seconds'.format(time.time() - sTime))
 
         return name, probability
-
-        #predictions = np.squeeze(predictions)
-
-            #best_class_indices = np.argmax(predictions)
-            #print(best_class_indices)
-            #best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
-
-            #for i in range(len(best_class_indices)):
-            #    print('%4d  %s: %.3f' % (i, self.class_names[best_class_indices[i]], best_class_probabilities[i]))
-
-            #print(predictions)
-
-            #embedding_layer = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-            #phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
-            #coord = tf.train.Coordinator()
-
-            #threads = tf.train.start_queue_runners(coord=coord, sess=sess)
-            #emb_array, label_array = self.create_embeddings(embedding_layer, images, labels,
-            #                                            images_placeholder, phase_train_placeholder, sess)
-            #coord.request_stop()
-            #coord.join(threads=threads)
-            #logger.info('Created {} embeddings'.format(len(emb_array)))
-
-            #self.evaluate_classifier(emb_array)
 
     @staticmethod
     def load_model(model_filepath):
@@ -203,7 +176,3 @@ if __name__ == '__main__':
                         help='Flag to determine if train or evaluate')
 
     args = parser.parse_args()
-
-#   main(input_directory=args.input_dir, model_path=args.model_path, classifier_output_path=args.classifier_path,
-#batch_size=args.batch_size, num_threads=args.num_threads, num_epochs=args.num_epochs,
-#min_images_per_labels=args.min_images_per_class, split_ratio=args.split_ratio, is_train=args.is_train)
