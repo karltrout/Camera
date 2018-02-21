@@ -38,6 +38,24 @@ def classifier_thread_worker(q):
             name, prediction = classifier.classify_image(image=image_in)
             q.task_done()
             print(" Found : {} with {:.3%} probability".format(name, prediction))
+
+            if prediction < .9:
+                imgDir = "UnKnownImgs/"
+
+                if (not os.path.exists(imgDir)):
+                    os.makedirs(imgDir)
+                    print("Created Directory: "+imgDir)
+
+                cnt = 0
+                notfound = imgDir+"UnKnownImg.{}.jpg".format(cnt)
+
+                while os.path.isfile(notfound):
+                    cnt=cnt+1
+                    notfound = imgDir+"UnKnownImg.{}.jpg".format(cnt)
+
+                cv2.imwrite(notfound, image_in)
+                print("writing file :"+notfound)
+
         except:
             pass
 
